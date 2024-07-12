@@ -26,8 +26,10 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '11'
+      - name: List Directory
+        run: ls -la android
       - name: Build With Gradle
-        run: ./gradlew assembleDebug
+        run: android/gradlew assembleDebug
       - name: Deploy To Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
