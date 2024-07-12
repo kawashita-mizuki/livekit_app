@@ -35,21 +35,3 @@ jobs:
           serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
           groups: developer
           file: app/build/outputs/apk/debug/app-debug.apk
-
-  notice:
-    if: always()
-    needs: deploy
-    name: Slack Notification
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: technote-space/workflow-conclusion-action@v1
-      - name: Slack Notification
-        uses: rtCamp/action-slack-notify@v2
-        env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
-          SLACK_CHANNEL: fishing-unit-converter
-          SLACK_USERNAME: Firebase App Distribution
-          SLACK_COLOR: ${{ env.WORKFLOW_CONCLUSION }}
-          SLACK_ICON_EMOJI: ':firebase-app-distribution:'
-          SLACK_MESSAGE: ${{ (env.WORKFLOW_CONCLUSION == 'success' && ':heads-down:　ベータ版がリリースされました！') || ':boom:　リリースに失敗しました!' }}
