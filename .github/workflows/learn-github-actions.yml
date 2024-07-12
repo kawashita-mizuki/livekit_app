@@ -3,7 +3,7 @@ name: firebase app distribute
 on:
   push:
     branches:
-      - feature/test-deploy
+      - main
 
 jobs:
   deploy:
