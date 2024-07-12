@@ -148,5 +148,3 @@ class _JoinPageState extends State<JoinPage> {
     );
   }
 }
-
-
