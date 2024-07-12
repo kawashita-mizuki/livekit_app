@@ -24,9 +24,6 @@ jobs:
         with:
           flutter-version: '3.22.2'
 
-      - name: Fix Git URL
-        run: git config --global url."https://".insteadOf git://
-
       - name: Set up JDK 11
         uses: actions/setup-java@v2
         with:
