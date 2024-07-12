@@ -23,7 +23,7 @@ jobs:
           restore-keys: |
             gradle-${{ runner.os }}-
       - name: Debug build
-        run: ./gradlew assembleDebug
+        run: android/gradlew assembleDebug
       - name: Deploy Firebase App Distribution [DEV]
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
