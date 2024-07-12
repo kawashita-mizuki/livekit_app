@@ -34,7 +34,7 @@ jobs:
         run: flutter pub get
 
       - name: Build Android APK
-        run:  flutter build apk --no-tree-shake-icons --build-number=${{ github.run_number }}
+        run:  flutter build apk --no-tree-shake-icons --build-number=24 --extra-gen-snapshot-options=--jvm-target=17
 
       - name: Build iOS IPA
         run: fvm flutter build ipa --no-tree-shake-icons --build-number=${{ github.run_number }}
