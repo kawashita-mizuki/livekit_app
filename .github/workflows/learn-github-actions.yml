@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-and-distribute:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -36,21 +36,21 @@ jobs:
           PP_PATH=$RUNNER_TEMP/build_pp.mobileprovision
           KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
           
-          # Decode and save the certificate and provisioning profile
-          echo "$BUILD_CERTIFICATE_BASE64" | base64 --decode > $CERTIFICATE_PATH
-          echo "$BUILD_PROVISION_PROFILE_BASE64" | base64 --decode > $PP_PATH
+          # Import certificate and provisioning profile from secrets
+          echo -n "$BUILD_CERTIFICATE_BASE64" | base64 --decode -o $CERTIFICATE_PATH
+          echo -n "$BUILD_PROVISION_PROFILE_BASE64" | base64 --decode -o $PP_PATH
           
-          # Create and configure the keychain
+          # Create temporary keychain
           security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
           security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
           security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
           
-          # Import the certificate into the keychain
+          # Import certificate to keychain
           security import $CERTIFICATE_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
           security set-key-partition-list -S apple-tool:,apple: -k "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
           security list-keychain -d user -s $KEYCHAIN_PATH
           
-          # Copy the provisioning profile into the appropriate directory
+          # Apply provisioning profile
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
 
@@ -72,17 +72,23 @@ jobs:
             build/ios/ipa/*.ipa
 
       - name: Deploy Android to Firebase App Distribution
-        uses: wzieba/Firebase-Distribution-Github-Action@v1
-        with:
-          appId: ${{ secrets.FIREBASE_ANDROID_APP_ID }}
-          token: ${{ secrets.FIREBASE_TOKEN }}
-          #          groups: developer
-          file: build/app/outputs/flutter-apk/app-development-release.apk
+        run: |
+          curl -sL https://firebase.tools | bash
+          echo ${{secrets.FIREBASE_TOKEN}} | firebase login:ci
+          firebase appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk \
+            --app ${{secrets.FIREBASE_ANDROID_APP_ID}} \
+            --token ${{secrets.FIREBASE_TOKEN}} \
+            --groups "testers"
+        env:
+          FIREBASE_CLI_PREVIEWS: true
 
       - name: Deploy iOS to Firebase App Distribution
-        uses: wzieba/Firebase-Distribution-Github-Action@v1
-        with:
-          appId: ${{ secrets.FIREBASE_IOS_APP_ID }}
-          token: ${{ secrets.FIREBASE_TOKEN }}
-          #          groups: developer
-          file: build/ios/ipa/Runner.ipa
+        run: |
+          curl -sL https://firebase.tools | bash
+          echo ${{secrets.FIREBASE_TOKEN}} | firebase login:ci
+          firebase appdistribution:distribute build/ios/ipa/*.ipa \
+            --app ${{secrets.FIREBASE_IOS_APP_ID}} \
+            --token ${{secrets.FIREBASE_TOKEN}} \
+            --groups "testers"
+        env:
+          FIREBASE_CLI_PREVIEWS: true
