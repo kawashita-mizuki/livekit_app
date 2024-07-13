@@ -246,4 +246,3 @@ class _LiveStartPageState extends State<LiveStartPage> {
     );
   }
 }
-
