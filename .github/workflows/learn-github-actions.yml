@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build-and-distribute:
     runs-on: macos-latest
     steps:
       - name: Checkout Repository
@@ -61,7 +61,7 @@ jobs:
         run: flutter build apk --release
 
       - name: Build iOS IPA
-        run: flutter build ipa --release
+        run: flutter build ipa --release --export-options-plist=ios/ExportOptions.plist
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v3
