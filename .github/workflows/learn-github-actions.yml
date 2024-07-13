@@ -74,7 +74,6 @@ jobs:
       - name: Deploy Android to Firebase App Distribution
         run: |
           curl -sL https://firebase.tools | bash
-          echo ${{secrets.FIREBASE_TOKEN}} | firebase login:ci
           firebase appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk \
             --app ${{secrets.FIREBASE_ANDROID_APP_ID}} \
             --token ${{secrets.FIREBASE_TOKEN}} \
@@ -85,7 +84,6 @@ jobs:
       - name: Deploy iOS to Firebase App Distribution
         run: |
           curl -sL https://firebase.tools | bash
-          echo ${{secrets.FIREBASE_TOKEN}} | firebase login:ci
           firebase appdistribution:distribute build/ios/ipa/*.ipa \
             --app ${{secrets.FIREBASE_IOS_APP_ID}} \
             --token ${{secrets.FIREBASE_TOKEN}} \
