@@ -71,10 +71,10 @@ jobs:
             build/app/outputs/flutter-apk/*.apk
             build/ios/ipa/*.ipa
 
-      - name: Setup Service Account from Secrets
-        run: |
-          echo "${{ secrets.SERVICE_ACCOUNT_JSON }}" | base64 --decode > $HOME/service-account.json
-          export GOOGLE_APPLICATION_CREDENTIALS=$HOME/service-account.json
+#      - name: Setup Service Account from Secrets
+#        run: |
+#          echo "${{ secrets.SERVICE_ACCOUNT_JSON }}" | base64 --decode > $HOME/service-account.json
+#          export GOOGLE_APPLICATION_CREDENTIALS=$HOME/service-account.json
 
       - name: Install Firebase CLI
         run: |
