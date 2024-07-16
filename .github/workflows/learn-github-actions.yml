@@ -80,9 +80,6 @@ jobs:
         run: |
           curl -sL https://firebase.tools | bash
 
-      - name: Check Firebase CLI version
-        run: firebase --version
-
       - name: Deploy Android to Firebase App Distribution
         run: |
           firebase appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk \
